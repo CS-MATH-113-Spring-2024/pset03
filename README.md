@@ -1,4 +1,4 @@
-# Problem Set 03: Propositional Logic
+# Problem Set 03: Propositional Logic and Equivalences
 # CS/MATH 113 Discrete Mathematics, Spring 2024
 ***
 
