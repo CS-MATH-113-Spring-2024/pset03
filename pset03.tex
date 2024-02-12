@@ -1,12 +1,17 @@
 \documentclass[a4paper]{exam}
 
-\usepackage{amsmath}
-\usepackage{geometry}
+\usepackage{amsmath,amsthm}
+\usepackage{array}
+\usepackage[a4paper]{geometry}
 
-\header{CS/MATH 113}{PSet 03}{Spring 2024}
+\header{CS/MATH 113}{PSet 03: Propositional Logic and Equivalences}{Spring 2024}
 \footer{}{Page \thepage\ of \numpages}{}
 \runningheadrule
 \runningfootrule
+
+\newcolumntype{C}{>{$}c<{$}} % math-mode version of "c" column type
+\newcommand\T{\ensuremath{\mathrm{T}}}
+\newcommand\F{\ensuremath{\mathrm{F}}}
 
 \title{Problem Set 03: Propositional Logic and Equivalences}
 \author{CS/MATH 113 Discrete Mathematics}
@@ -14,6 +19,9 @@
 
 \boxedpoints
 
+\usepackage{draftwatermark}
+\SetWatermarkText{Sample Solution}
+\SetWatermarkScale{3}
 \printanswers
 
 \begin{document}
@@ -23,41 +31,111 @@
 
   \question Show that the following are logically equivalent without using truth tables:
   \begin{parts}
-    \part $(p \Rightarrow r) \lor (q \Rightarrow r) \equiv (p \land q) \Rightarrow r$
+    \part $(p \implies r) \lor (q \implies r) \equiv (p \land q) \implies r$
 
     \begin{solution}
-      % Enter your solution here.
-    \end{solution}
+      We solve LHS to obtain the same expression as RHS.
+      \begin{proof}
+      \begin{align*}
+        (p \implies r) \lor (q \implies r) &\equiv \lnot p \lor r \lor \lnot q \lor r && \text{conditional-disjunction}\\
+                                           &\equiv \lnot p \lor \lnot q \lor r \lor r && \text{commutativity}\\
+                                           &\equiv \lnot (p \land q) \lor r && \text{De Morgan's, idempotent}\\
+                                           &\equiv (p \land q) \implies r && \text{conditional-disjunction}
+      \end{align*}
+    \end{proof}
+  \end{solution}
     \part 
-    $\neg \left[ \neg \left[\left(p \lor q \right) \land r \right] \lor \neg q \right] \equiv q \land r $
+    $\lnot \left[ \lnot \left[\left(p \lor q \right) \land r \right] \lor \lnot q \right] \equiv q \land r $
 
     \begin{solution}
-      % Enter your solution here.
-    \end{solution}
-    \part  $(p \lor q \lor r) \land (p \lor t \lor \neg q) \land (p \lor \neg t \lor r)  \equiv p \lor \left[ r \land \left(t \lor \neg q \right)\right]$
+      We solve LHS to obtain the same expression as RHS.
+      \begin{proof}
+      \begin{align*}
+        \lnot [ \lnot [(p \lor q ) \land r ] \lor \lnot q ] &\equiv [[(p \lor q ) \land r ] \land q ] && \text{De Morgan's}\\
+                                                         &\equiv (p \lor q ) \land q  \land r && \text{associativity, commutativity}\\
+                                                         &\equiv q \land r && \text{absorption}
+      \end{align*}
+    \end{proof}
+  \end{solution}
+    \part  $(p \lor q \lor r) \land (p \lor t \lor \lnot q) \land (p \lor \lnot t \lor r)  \equiv p \lor [ r \land (t \lor \lnot q )]$
 
     \begin{solution}
-      % Enter your solution here.
-    \end{solution}
+      We notice $t\lor \lnot q$ on both sides.\\
+      For simplicity, let $X\equiv t\lor \lnot q$.\\
+      Then the given identity becomes: $(p \lor q \lor r) \land (p \lor X) \land (p \lor \lnot t \lor r)  \equiv p \lor (r \land X)$.\\
+      We solve LHS to obtain the same expression as RHS.
+      \begin{proof}
+      \begin{align*}
+        \text{LHS} &: (p \lor q \lor r) \land (p \lor X) \land (p \lor \lnot t \lor r) & & \\
+                   & \equiv (p \lor X) \land (p \lor q \lor r) \land (p \lor \lnot t \lor r)  && \text{commutativity}\\
+                   & \equiv (p \lor X) \land ((p \lor r)\lor (q\land \lnot t))  && \text{distribution}\\
+                   & \equiv (p \lor X) \land ((p \lor r)\lor \lnot X)  && \text{De Morgan's}\\
+                   & \equiv (p\land(p\lor r)) \lor (p\land\lnot X) \lor (X\land(p \lor r)) \lor (X\land\lnot X)  && \text{distribution}\\
+                   & \equiv p \lor (p\land\lnot X) \lor (X\land(p \lor r)) \lor \F  && \text{absorption, negation}\\                      & \equiv p \lor (X\land(p \lor r))  && \text{absorption, identity}\\        
+                   & \equiv p \lor (p\land X) \lor (r\land X)  && \text{distribution}\\        
+                   & \equiv p \lor (r\land X)  && \text{absorption}
+      \end{align*}
+    \end{proof}
+  \end{solution}
   \end{parts}
   
   \question Use Truth tables to see if the following statements are logically equivalent: 
   \begin{parts}
-    \part $p \Rightarrow (q \lor r) \equiv (q \Rightarrow p) \land (p \Rightarrow r)$
+    \part $p \implies (q \lor r) \equiv (q \implies p) \land (p \implies r)$
 
     \begin{solution}
-      % Enter your solution here.
+      \null\newline
+      \begin{tabular}{CCC||*{5}{C}}
+        p & q & r & q\lor r & q\implies p & p\implies r & p \implies (q \lor r) & (q \implies p) \land (p \implies r)\\\hline\hline
+        \T & \T & \T & \T & \T & \T & \T & \T \\
+        \T & \T & \F & \T & \T & \F & \T & \F \\
+        \T & \F & \T & \T & \T & \T & \T & \T \\
+        \T & \F & \F & \F & \T & \F & \F & \F \\
+        \F & \T & \T & \T & \F & \T & \T & \F \\
+        \F & \T & \F & \T & \F & \T & \T & \F \\
+        \F & \F & \T & \T & \T & \T & \T & \T \\
+        \F & \F & \F & \F & \T & \T & \T & \T \\
+      \end{tabular}
+      
+      The last two columns corresponding to the two statements are nonidentical. Therefore, the statements are not logically equivalent.
     \end{solution}
     \part 
-    $(p \lor q) \Rightarrow r \equiv (p \Rightarrow r) \land (q \Rightarrow r)$
+    $(p \lor q) \implies r \equiv (p \implies r) \land (q \implies r)$
 
     \begin{solution}
-      % Enter your solution here.
+      \null\newline
+      \begin{tabular}{CCC||*{5}{C}}
+        p & q & r & p\lor q & p\implies r & q\implies r & (p\lor q)\implies r & (p \implies r) \land (q \implies r)\\\hline\hline
+        \T & \T & \T & \T & \T & \T & \T & \T \\
+        \T & \T & \F & \T & \F & \F & \F & \F \\
+        \T & \F & \T & \T & \T & \T & \T & \T \\
+        \T & \F & \F & \T & \F & \T & \F & \F \\
+        \F & \T & \T & \T & \T & \T & \T & \T \\
+        \F & \T & \F & \T & \T & \F & \F & \F \\
+        \F & \F & \T & \F & \T & \T & \T & \T \\
+        \F & \F & \F & \F & \T & \T & \T & \T \\
+      \end{tabular}
+      
+      The last two columns corresponding to the two statements are identical. Therefore, the statements are logically equivalent.
     \end{solution}
-    \part  $p \Rightarrow (q \lor r) \equiv \neg r \Rightarrow (p \Rightarrow q)$
+    \part  $p \implies (q \lor r) \equiv \lnot r \implies (p \implies q)$
 
     \begin{solution}
-      % Enter your solution here.
+      The LHS is the same as part (a) so we can copy the column from that table.
+
+      \begin{tabular}{CCC||*{4}{C}}
+        p & q & r & \lnot r & p\implies q & p \implies (q \lor r) & \lnot r \implies (p \implies q)\\\hline\hline
+        \T & \T & \T & \F & \T & \T & \T \\
+        \T & \T & \F & \T & \T & \T & \T \\
+        \T & \F & \T & \F & \F & \T & \T \\
+        \T & \F & \F & \T & \F & \F & \F \\
+        \F & \T & \T & \F & \T & \T & \T \\
+        \F & \T & \F & \T & \T & \T & \T \\
+        \F & \F & \T & \F & \T & \T & \T \\
+        \F & \F & \F & \T & \T & \T & \T \\
+      \end{tabular}
+      
+      The last two columns corresponding to the two statements are identical. Therefore, the statements are logically equivalent.
     \end{solution}
   \end{parts}
 
@@ -65,15 +143,15 @@
   \begin{parts}
   \part Graduates take a job in industry or go to graduate school or start their own ventures.
   \begin{solution}
-    % Enter your solution here.
+    Graduates neither take a job in industry nor go to graduate school nor start their own ventures.
   \end{solution}
   \part First year students know python and calculus.
   \begin{solution}
-    % Enter your solution here.
+    First year students do not know at least one of python or calculus.
   \end{solution}
   \part Horizon is new and bright.
   \begin{solution}
-    % Enter your solution here.
+    Horizon is old or dull.
   \end{solution}
 \end{parts}
 
@@ -81,15 +159,21 @@
 \begin{parts}
   \part $(p\lor \lnot q)\land(\lnot p\lor q)\land(\lnot p\lor\lnot q)$
   \begin{solution}
-    % Enter your solution here.
+    The proposition is a conjunction of three simpler propositions, so is satisfied when each of the three is True. Each of the simpler propositions is a disjunction so is True when any operand is True. All operands involve $p$, $q$, or their negations. In fact, we see that $(p,q) = (\F,\F)$ makes all three True and thus satisfies the compound proposition.
+
+    Therefore, the compound proposition is satisfiable.
   \end{solution}
   \part $(p\implies q)\land(p\implies\lnot q)\land (\lnot p\implies q)\land(\lnot p\implies\lnot q)$
   \begin{solution}
-    % Enter your solution here.
+    The proposition is a conjunction of four simpler propositions, so is satisfied when each of the four is True. Each of the simpler propositions is an implication. All operands involve $p$, $q$, or their negations. In fact, we see that the four propositions cover all possible combinations of truth values of $p$ and $q$. Thus, one of the four propositions will always be False.
+
+    Therefore, the compound proposition is not satisfiable.
   \end{solution}
   \part $(p \iff q)\land(\lnot p \iff q)$
   \begin{solution}
-    % Enter your solution here.
+    The proposition is a conjunction of two simpler propositions, so is satisfied when each of the two is True. Each of the simpler propositions is a biconditional. The biconditional statements are such that they will never be True at the same time.
+
+    Therefore, the compound proposition is not satisfiable.
   \end{solution}
 \end{parts}
 \end{questions}
